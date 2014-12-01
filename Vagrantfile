@@ -44,7 +44,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.synced_folder "hybris/bin/custom/tealiumIQ", "/home/vagrant/hybris/bin/custom/tealiumIQ", create: true
 
 
-	config.vm.post_up_message =  "If it has been more than 30 days since first start, cd into hybris/bin/platform/ and 'ant initialize' to reset license\nin platform/ 'ant build all' if you make changes to the local.properties of the tealiumIQ addon\nin platform './hybrisserver.sh.' to start server"
+	config.vm.post_up_message =  "After 'vagrant up' do:
+                                1)  'vagrant ssh'
+                                2)  cd into hybris/bin/custom/tealiumIQ/ and 
+                                3)  If it is first start, \"sudo ./init.sh\"
+                                4)  If you make changes to the local.properties of the tealiumIQ addon: \"sudo ./startServer.sh\"
+                                5)  If you need to update the addon to the most current version in git: \"sudo ./updateAddon.sh\""
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
