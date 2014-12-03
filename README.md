@@ -20,6 +20,19 @@ Install vagrant
 
 
 ----------
+###Add your tealium account info ###
+In this repo edit in a text editor<br>
+hybris/bin/custom/tealiumIQ/project.properties.template<br>
+modify (no quotes):<br>
+These are your tealiumIQ account specific settings<br>
+tealiumIQ.account=tealium_acount<br>
+tealiumIQ.profile=tealium_profile<br>
+tealiumIQ.target=dev<br>
+<br>
+Set to 0(false) or 1(true) to add utag.sync.js to the < head /><br>
+tealiumIQ.utagSyncEnabled=0<br>
+
+----------
 ### Start Vagrant for hybris and TealimIQ ###
 Open the terminal<br><br>
 <img src="http://upload.wikimedia.org/wikipedia/commons/a/af/I3_window_manager_screenshot.png" alt="OSX terminal" height="200px"><br><br>
