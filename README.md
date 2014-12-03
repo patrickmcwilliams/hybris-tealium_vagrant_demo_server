@@ -15,22 +15,22 @@ All of this happens automatically upon starting the vagrant instance
 
 ###Install Vagrant###
 
-Download the vagrant package for your OS [here](https://www.vagrantup.com/downloads.html)
+Download the vagrant package for your OS [here](https://www.vagrantup.com/downloads.html)<br>
 Install vagrant
 
 
 ----------
 ### Start Vagrant for hybris and TealimIQ ###
-Open the terminal
-<img src="http://upload.wikimedia.org/wikipedia/commons/a/af/I3_window_manager_screenshot.png" alt="OSX terminal" height="200px"  />
+Open the terminal<br><br>
+<img src="http://upload.wikimedia.org/wikipedia/commons/a/af/I3_window_manager_screenshot.png" alt="OSX terminal" height="200px"><br><br>
 
-to start server
-change directory to where you cloned this repo (i.e "cd ~/Documents/git/hybris")
-type "vagrant up"
+to start server<br>
+change directory to where you cloned this repo (i.e "cd ~/Documents/git/hybris")<br>
+type "vagrant up"<br>
 
-to turn off
-change directory to where you cloned this repo (i.e "cd ~/Documents/git/hybris")
-type "vagrant halt"
+to turn off<br>
+change directory to where you cloned this repo (i.e "cd ~/Documents/git/hybris")<br>
+type "vagrant halt"<br>
 
 ----------
 That's it!
