@@ -57,8 +57,20 @@ get_package () {
 }
 
 init_hybris () {
+  > /home/vagrant/setup-config/build_status.log
   echo "[Initializing hybris DB]\n[This may take > 10 minutes]"
-  ant -S initialize
+  stdbuf -oL ant -S initialize > /home/vagrant/setup-config/build_status.log 2>&1 &
+  while [ "$(grep -E ".*BUILD SUCCESSFUL.*" /home/vagrant/setup-config/build_status.log)" == "" ]; do
+    echo "[ hybris DB initialization in progress ]"
+    if [ "$(grep -E ".*BUILD FAILED.*" /home/vagrant/setup-config/build_status.log)" != "" ]; then
+      echo "[ initializaion failed ]"
+      break
+    fi
+    sleep 2m
+  done
+  if [ "$(grep -E ".*BUILD SUCCESSFUL.*" /home/vagrant/setup-config/build_status.log)" != "" ]; then
+    echo "[ initializaion a success ]"
+  fi
   date +%s &> /home/vagrant/setup-config/init.time
 }
 
@@ -106,13 +118,46 @@ else
   fi
 # end edit
  
+  > /home/vagrant/setup-config/build_status.log
   echo "[ Installing tealiumIQ addon ]"
-  ant -q addoninstall -Daddonnames="tealiumIQ" -DaddonStorefront.yacceleratorstorefront="yacceleratorstorefront"
+  stdbuf -oL ant addoninstall -Daddonnames="tealiumIQ" -DaddonStorefront.yacceleratorstorefront="yacceleratorstorefront" > /home/vagrant/setup-config/build_status.log 2>&1 &
+  while [ "$(grep -E ".*BUILD SUCCESSFUL.*" /home/vagrant/setup-config/build_status.log)" == "" ]; do
+    echo "[ tealiumIQ addon in progress ]"
+    if [ "$(grep -E ".*BUILD FAILED.*" /home/vagrant/setup-config/build_status.log)" != "" ]; then
+      echo "[ addon installation failed ]"
+      break
+    fi
+    sleep 2m
+  done
+  if [ "$(grep -E ".*BUILD SUCCESSFUL.*" /home/vagrant/setup-config/build_status.log)" != "" ]; then
+    echo "[ addon installation a success ]"
+  fi
+  
+  > /home/vagrant/setup-config/build_status.log
   echo "[ Building hybris environment ]"
-  ant -q build all
+  stdbuf -oL ant build all > /home/vagrant/setup-config/build_status.log 2>&1 &
+  while [ "$(grep -E ".*BUILD SUCCESSFUL.*" /home/vagrant/setup-config/build_status.log)" == "" ]; do
+    echo "[ hybris environment build in progress ]"
+    if [ "$(grep -E ".*BUILD FAILED.*" /home/vagrant/setup-config/build_status.log)" != "" ]; then
+      echo "[ build failed ]"
+      break
+    fi
+    sleep 2m
+  done
+  if [ "$(grep -E ".*BUILD SUCCESSFUL.*" /home/vagrant/setup-config/build_status.log)" != "" ]; then
+    echo "[ hybris environment build successful ]"
+  fi
+  
   echo "[ Starting hybris server ]"
-  ./hybrisserver.sh
-
+  stdbuf -oL ./hybrisserver.sh > /home/vagrant/setup-config/server_status.log 2>&1 &
+  echo "[ Starting server ]"
+  PROGRESS_BAR=0
+  while [ "$(grep -E ".*Starting ProtocolHandler.*" /home/vagrant/setup-config/server_status.log)" == "" ]; do
+    echo "[ Server startup in progress. May take more than 10 minutes ]"
+    sleep 2m
+  done
+  echo "[ hybris server started successfully ]"
+  
 # Edit master.tag to insert tealium code onto pages  
   if ! grep -Pq "$MASTER_TAG_INCLUDE_ALREADY_ADDED" $MASTER_TAG_FILE
   then
