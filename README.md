@@ -4,7 +4,7 @@ This repo serves to allow you to be able to
 
  - easily startup a linux server
  - get hybris installed on that server
- - get the most current tealiumIQ addon for hybris from [here](https://github.com/patrickmcwilliams/HybrisIntegration)
+ - get the most current tealiumIQ addon for hybris from [here](https://github.com/patrickmcwilliams/hybris-integration)
  - add the addon to the environment
  - start the server
 
@@ -22,16 +22,20 @@ Install vagrant
 ----------
 ###Add your tealium account info ###
 In this repo edit in a text editor<br>
-hybris/bin/custom/tealiumIQ/project.properties.template<br>
+hybris/bin/custom/tealiumiqaddon/project.properties.template<br>
 modify (no quotes):<br>
-These are your tealiumIQ account specific settings<br>
-tealiumIQ.account=tealium_acount<br>
-tealiumIQ.profile=tealium_profile<br>
-tealiumIQ.target=dev<br>
+
+```
+tealiumiqaddon.account=tealium_acount
+tealiumiqaddon.profile=tealium_profile
+tealiumiqaddon.target=dev
+```
 <br>
 Set to 0(false) or 1(true) to add utag.sync.js to the < head /><br>
-tealiumIQ.utagSyncEnabled=0<br>
 
+```
+tealiumiqaddon.utagSyncEnabled=0
+```
 ----------
 ### Start Vagrant for hybris and TealimIQ ###
 Open the terminal<br><br>
