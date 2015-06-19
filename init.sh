@@ -21,39 +21,39 @@ declare -x MASTER_TAG_HEAD_ALREADY_ADDED
 declare -x MASTER_TAG_INSERT_INCLUDE
 declare -x MASTER_TAG_INCLUDE_ALREADY_ADDED
 
-ADDON_DIR="/home/vagrant/hybris/bin/custom/tealiumIQ/"
-CURRENT_HASH=$(git ls-remote git://github.com/patrickmcwilliams/HybrisIntegration.git HEAD)
+ADDON_DIR="/home/vagrant/hybris/bin/custom/tealiumiqaddon/"
+CURRENT_HASH=$(git ls-remote git://github.com/patrickmcwilliams/hybris-integration.git HEAD)
 
 DIR="/home/vagrant/hybris/bin/platform/"
 EXTENSION_TAG="\t<\/extensions>"
-EXTENSION_INSERT="\t\t<extension dir=\"\${HYBRIS_BIN_DIR}\/custom\/tealiumIQ\"\/>"
-EXTENSION_ALREADY_ADDED="\t\t<extension dir=\\\"\\\${HYBRIS_BIN_DIR}\/custom\/tealiumIQ\"\/>"
+EXTENSION_INSERT="\t\t<extension dir=\"\${HYBRIS_BIN_DIR}\/custom\/tealiumiqaddon\"\/>"
+EXTENSION_ALREADY_ADDED="\t\t<extension dir=\\\"\\\${HYBRIS_BIN_DIR}\/custom\/tealiumiqaddon\"\/>"
 LOCAL_EXTENSION_FILE="/home/vagrant/hybris/config/localextensions.xml"
 
 
 MASTER_TAG_FILE="/home/vagrant/hybris/bin/ext-template/yacceleratorstorefront/web/webroot/WEB-INF/tags/desktop/template/master.tag"
 
-MASTER_TAG_INSERT_INCLUDE="<%@ taglib prefix=\"tealiumIQ\" tagdir=\"\/WEB-INF\/tags\/addons\/tealiumIQ\/shared\/analytics\" %>"
-MASTER_TAG_INCLUDE_ALREADY_ADDED="<%@ taglib prefix=\\\"tealiumIQ\\\" tagdir=\\\"\/WEB-INF\/tags\/addons\/tealiumIQ\/shared\/analytics\\\" %>"
+MASTER_TAG_INSERT_INCLUDE="<%@ taglib prefix=\"tealiumiqaddon\" tagdir=\"\/WEB-INF\/tags\/addons\/tealiumiqaddon\/shared\/analytics\" %>"
+MASTER_TAG_INCLUDE_ALREADY_ADDED="<%@ taglib prefix=\\\"tealiumiqaddon\\\" tagdir=\\\"\/WEB-INF\/tags\/addons\/tealiumiqaddon\/shared\/analytics\\\" %>"
 
 MASTER_TAG_BODY_TAG="<body[^\/]*>"
-MASTER_TAG_INSERT_BODY="<tealiumIQ:tealium\/>"
-MASTER_TAG_BODY_ALREADY_ADDED="<tealiumIQ:tealium\/>"
+MASTER_TAG_INSERT_BODY="<tealiumiqaddon:tealium\/>"
+MASTER_TAG_BODY_ALREADY_ADDED="<tealiumiqaddon:tealium\/>"
 
 MASTER_TAG_HEAD_TAG="<head>"
-MASTER_TAG_INSERT_HEAD="<tealiumIQ:sync\/>"
-MASTER_TAG_HEAD_ALREADY_ADDED="<tealiumIQ:sync\/>"
+MASTER_TAG_INSERT_HEAD="<tealiumiqaddon:sync\/>"
+MASTER_TAG_HEAD_ALREADY_ADDED="<tealiumiqaddon:sync\/>"
 
 get_package () {
   if [ "$(ls -A $DIR)" ]; then
     find $ADDON_DIR -type f -not -name 'project\.properties.*' | xargs rm -rf
-    find $ADDON_DIR -type d -not -wholename '*tealiumIQ/' | xargs rm -rf
+    find $ADDON_DIR -type d -not -wholename '*tealiumiqaddon/' | xargs rm -rf
   fi
   cd $ADDON_DIR
   echo "[Unpacking curent addon from git repo]"
-  curl -Ls https://github.com/patrickmcwilliams/HybrisIntegration/tarball/master | tar zx --strip=5 --skip-old-files
+  curl -Ls https://github.com/patrickmcwilliams/hybris-integration/tarball/master | tar zx --strip=5 --skip-old-files
   echo "[Getting .git hash]"
-  git ls-remote git://github.com/patrickmcwilliams/HybrisIntegration.git HEAD &> /home/vagrant/setup-config/git.hash
+  git ls-remote git://github.com/patrickmcwilliams/hybris-integration.git HEAD &> /home/vagrant/setup-config/git.hash
 }
 
 init_hybris () {
@@ -110,20 +110,20 @@ else
   fi
 # end init  
 
-# edit localextions.xml to add tealiumIQ addon
+# edit localextions.xml to add tealiumiqaddon addon
   if ! grep -Pq "$EXTENSION_ALREADY_ADDED" $LOCAL_EXTENSION_FILE
   then
-    echo "[ Added tealiumIQ to localextensions.xml ]"
+    echo "[ Added tealiumiqaddon to localextensions.xml ]"
     sed -i "s/$EXTENSION_TAG/$EXTENSION_INSERT\n$EXTENSION_TAG/" $LOCAL_EXTENSION_FILE
   fi
 # end edit
 
 # add tealium addon 
   > /home/vagrant/setup-config/build_status.log
-  echo "[ Installing tealiumIQ addon ]"
-  stdbuf -oL ant addoninstall -Daddonnames="tealiumIQ" -DaddonStorefront.yacceleratorstorefront="yacceleratorstorefront" > /home/vagrant/setup-config/build_status.log 2>&1 &
+  echo "[ Installing tealiumiqaddon addon ]"
+  stdbuf -oL ant addoninstall -Daddonnames="tealiumiqaddon" -DaddonStorefront.yacceleratorstorefront="yacceleratorstorefront" > /home/vagrant/setup-config/build_status.log 2>&1 &
   while [ "$(grep -E ".*BUILD SUCCESSFUL.*" /home/vagrant/setup-config/build_status.log)" == "" ]; do
-    echo "[ tealiumIQ addon in progress ]"
+    echo "[ tealiumiqaddon addon in progress ]"
     if [ "$(grep -E ".*BUILD FAILED.*" /home/vagrant/setup-config/build_status.log)" != "" ]; then
       echo "[ addon installation failed ]"
       break
@@ -138,7 +138,7 @@ else
 # build system 
   > /home/vagrant/setup-config/build_status.log
   echo "[ Building hybris environment ]"
-  stdbuf -oL ant build all > /home/vagrant/setup-config/build_status.log 2>&1 &
+  stdbuf -oL ant all > /home/vagrant/setup-config/build_status.log 2>&1 &
   while [ "$(grep -E ".*BUILD SUCCESSFUL.*" /home/vagrant/setup-config/build_status.log)" == "" ]; do
     echo "[ hybris environment build in progress ]"
     if [ "$(grep -E ".*BUILD FAILED.*" /home/vagrant/setup-config/build_status.log)" != "" ]; then
